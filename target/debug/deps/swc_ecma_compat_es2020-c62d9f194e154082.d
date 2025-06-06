@@ -1,0 +1,8 @@
+/home/runner/work/rust_js_parser/rust_js_parser/target/debug/deps/libswc_ecma_compat_es2020-c62d9f194e154082.rmeta: /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/swc_ecma_compat_es2020-16.0.0/src/lib.rs /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/swc_ecma_compat_es2020-16.0.0/src/export_namespace_from.rs /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/swc_ecma_compat_es2020-16.0.0/src/nullish_coalescing.rs /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/swc_ecma_compat_es2020-16.0.0/src/optional_chaining.rs
+
+/home/runner/work/rust_js_parser/rust_js_parser/target/debug/deps/swc_ecma_compat_es2020-c62d9f194e154082.d: /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/swc_ecma_compat_es2020-16.0.0/src/lib.rs /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/swc_ecma_compat_es2020-16.0.0/src/export_namespace_from.rs /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/swc_ecma_compat_es2020-16.0.0/src/nullish_coalescing.rs /home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/swc_ecma_compat_es2020-16.0.0/src/optional_chaining.rs
+
+/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/swc_ecma_compat_es2020-16.0.0/src/lib.rs:
+/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/swc_ecma_compat_es2020-16.0.0/src/export_namespace_from.rs:
+/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/swc_ecma_compat_es2020-16.0.0/src/nullish_coalescing.rs:
+/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/swc_ecma_compat_es2020-16.0.0/src/optional_chaining.rs:
