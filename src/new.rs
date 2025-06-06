@@ -1,15 +1,13 @@
 use super::{log_callback, JsHttpRequestProcessor};
-use crate::ssr::http_request::SimpleHttpRequest;
 use ssr_rs::v8;
 use std::collections::HashMap;
 use std::convert::TryFrom;
-use std::io::stderr;
 use swc::Compiler;
-use swc_common::errors::{ColorConfig, Emitter, EmitterWriter, Handler};
+use swc_common::errors::{ColorConfig, Handler};
 use swc_common::sync::Lrc;
 use swc_common::SourceMap;
 use swc_ecma_parser::Syntax;
-use swc_ecma_parser::TsConfig;
+use swc_ecma_parser::TsSyntax;
 
 impl<'s, 'i> JsHttpRequestProcessor<'s, 'i>
 where
@@ -69,8 +67,10 @@ where
 
         // execute script
         let cm: Lrc<SourceMap> = Default::default();
-        let handler =
-            Handler::with_tty_emitter(ColorConfig::Auto, true, false, Some(cm.clone()));
+        let handler = Handler::with_emitter_writer(
+            Box::new(std::io::stderr()),
+            Some(cm.clone()),
+        );
         let compiler = Compiler::new(cm.clone());
         let fm = cm.new_source_file(
             swc_common::FileName::Custom("in.js".into()).into(),
@@ -83,7 +83,7 @@ where
                 &swc::config::Options {
                     config: swc::config::Config {
                         jsc: swc::config::JscConfig {
-                            syntax: Some(Syntax::Typescript(TsConfig {
+                            syntax: Some(Syntax::Typescript(TsSyntax {
                                 tsx: true,
                                 ..Default::default()
                             })),
