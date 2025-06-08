@@ -14,7 +14,7 @@ where
         let request: Box<dyn SimpleHttpRequest> = Box::new(request);
         let request = self.wrap_request(request);
 
-        let scope = &mut v8::HandleScope::new(&mut self.context_scope);
+        let scope = &mut v8::HandleScope::new(&mut *self.context_scope);
         let try_catch = &mut v8::TryCatch::new(scope);
 
         let process_fn = self.process_fn.as_mut().unwrap();

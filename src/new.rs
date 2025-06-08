@@ -1,4 +1,5 @@
-use super::{log_callback, JsHttpRequestProcessor};
+use super::{log_callback, require_callback, JsHttpRequestProcessor};
+use crate::send_wrapper::SendWrapper;
 use ssr_rs::v8;
 use std::collections::HashMap;
 use std::convert::TryFrom;
@@ -24,6 +25,10 @@ where
             v8::String::new(isolate_scope, "log").unwrap().into(),
             v8::FunctionTemplate::new(isolate_scope, log_callback).into(),
         );
+        global.set(
+            v8::String::new(isolate_scope, "require").unwrap().into(),
+            v8::FunctionTemplate::new(isolate_scope, require_callback).into(),
+        );
 
         let context = v8::Context::new(
             isolate_scope,
@@ -41,8 +46,8 @@ where
         let request_template = v8::Global::new(&mut context_scope, request_template);
 
         let mut self_ = JsHttpRequestProcessor {
-            context,
-            context_scope,
+            context: unsafe { SendWrapper::new(context) },
+            context_scope: unsafe { SendWrapper::new(context_scope) },
             process_fn: None,
             request_template,
             _map_template: None,
@@ -50,17 +55,17 @@ where
 
         // loads options and output
         let options = self_.wrap_map(options);
-        let options_str = v8::String::new(&mut self_.context_scope, "options").unwrap();
-        self_.context.global(&mut self_.context_scope).set(
-            &mut self_.context_scope,
+        let options_str = v8::String::new(&mut *self_.context_scope, "options").unwrap();
+        self_.context.global(&mut *self_.context_scope).set(
+            &mut *self_.context_scope,
             options_str.into(),
             options.into(),
         );
 
-        let output = v8::Object::new(&mut self_.context_scope);
-        let output_str = v8::String::new(&mut self_.context_scope, "output").unwrap();
-        self_.context.global(&mut self_.context_scope).set(
-            &mut self_.context_scope,
+        let output = v8::Object::new(&mut *self_.context_scope);
+        let output_str = v8::String::new(&mut *self_.context_scope, "output").unwrap();
+        self_.context.global(&mut *self_.context_scope).set(
+            &mut *self_.context_scope,
             output_str.into(),
             output.into(),
         );
@@ -74,7 +79,7 @@ where
         let compiler = Compiler::new(cm.clone());
         let fm = cm.new_source_file(
             swc_common::FileName::Custom("in.js".into()).into(),
-            source.to_rust_string_lossy(&mut self_.context_scope),
+            source.to_rust_string_lossy(&mut *self_.context_scope),
         );
         let transformed = compiler
             .process_js_file(
@@ -85,10 +90,15 @@ where
                         jsc: swc::config::JscConfig {
                             syntax: Some(Syntax::Typescript(TsSyntax {
                                 tsx: true,
-                                ..Default::default()
+                                decorators: true,
+                                dts: false,
+                                no_early_errors: false,
+                                disallow_ambiguous_jsx_like: true,
                             })),
+                            target: Some(swc_ecma_ast::EsVersion::Es5),
                             ..Default::default()
                         },
+                        module: Some(swc::config::ModuleConfig::Es6(Default::default())),
                         ..Default::default()
                     },
                     ..Default::default()
@@ -97,14 +107,18 @@ where
             .unwrap();
 
         let transformed_source =
-            v8::String::new(&mut self_.context_scope, &transformed.code).unwrap();
-        self_.execute_script(transformed_source);
+            v8::String::new(&mut *self_.context_scope, &transformed.code).unwrap();
+        if transformed.code.contains("import") || transformed.code.contains("export") {
+            self_.execute_module(transformed_source);
+        } else {
+            self_.execute_script(transformed_source);
+        }
 
-        let process_str = v8::String::new(&mut self_.context_scope, "Process").unwrap();
+        let process_str = v8::String::new(&mut *self_.context_scope, "Process").unwrap();
         let process_fn = self_
             .context
-            .global(&mut self_.context_scope)
-            .get(&mut self_.context_scope, process_str.into())
+            .global(&mut *self_.context_scope)
+            .get(&mut *self_.context_scope, process_str.into())
             .expect("missing function Process");
 
         let process_fn =

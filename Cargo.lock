@@ -1171,10 +1171,17 @@ dependencies = [
  "serde_json",
  "ssr_rs",
  "swc",
+ "swc_atoms",
  "swc_common",
  "swc_ecma_ast",
+ "swc_ecma_codegen",
+ "swc_ecma_lexer",
  "swc_ecma_parser",
- "swc_ecma_react_compiler",
+ "swc_ecma_transforms_base",
+ "swc_ecma_transforms_module",
+ "swc_ecma_transforms_react",
+ "swc_ecma_transforms_typescript",
+ "swc_ecma_visit",
  "thiserror 2.0.12",
  "tokio",
 ]
@@ -2638,18 +2645,6 @@ dependencies = [
  "swc_ecma_ast",
  "swc_ecma_transforms",
  "swc_ecma_utils",
- "swc_ecma_visit",
-]
-
-[[package]]
-name = "swc_ecma_react_compiler"
-version = "4.0.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "28ce240709428417c997bbaf0db62fd297f634d7225fd3e74afa89e62ba461a9"
-dependencies = [
- "swc_atoms",
- "swc_common",
- "swc_ecma_ast",
  "swc_ecma_visit",
 ]
 

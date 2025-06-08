@@ -7,7 +7,7 @@ where
 {
     /// Prints the output.
     pub fn print_output(&mut self) {
-        let scope = &mut v8::HandleScope::new(&mut self.context_scope);
+        let scope = &mut v8::HandleScope::new(&mut *self.context_scope);
         let key = v8::String::new(scope, "output").unwrap();
         let output = self
             .context
@@ -27,7 +27,7 @@ where
             let key = key.to_rust_string_lossy(scope);
             let value = value.to_rust_string_lossy(scope);
 
-            println!("{key}: {value}");
+            println!("foss {key}: {value}");
         }
     }
 }
